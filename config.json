@@ -1,0 +1,10 @@
+{
+  "local_port": 5001,
+  "peer_ip": "10.201.100.237",
+  "peer_port": 5002,
+  "my_private_key": "/home/gurnoor/SecureChat/private.pem",
+  "peer_public_key": "/home/gurnoor/SecureChat2/public2.pem",
+  "aes_key_size_bytes": 32,
+  "aes_iv_size_bytes": 16
+}
+
