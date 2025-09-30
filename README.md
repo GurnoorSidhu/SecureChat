@@ -1,88 +1,140 @@
-Two-Party Secure Messaging App
+# 🔐 Two-Party Secure Messaging App
 
-A C++ desktop application that enables secure messaging between two systems over a network using AES (session key encryption) and RSA (public-private key pairs). The application is built with Qt (for GUI & networking) and Crypto++ (for cryptography).
+A **C++ desktop application** that enables **secure, end-to-end messaging** between two systems over a network using **AES (session key encryption)** and **RSA (public–private key pairs)**.
 
-Each instance of the app runs independently on a system with its own private key and the peer’s public key. Messages are encrypted with a fresh AES session key for each transmission, and the session key itself is encrypted with the recipient’s RSA public key.
+Built with **Qt** (for GUI & networking) and **Crypto++** (for cryptography).
 
-🚀 Features
+---
 
-End-to-End Security
+## ✨ Features
 
-AES session key encryption for messages.
+* 🔒 **End-to-End Security**
 
-RSA encryption for securely sharing the session key.
+  * AES session key encryption for messages.
+  * RSA encryption for securely exchanging session keys.
+  * Private keys **never leave the local machine**.
 
-Private key never leaves the local machine.
+* 🖥️ **Graphical User Interface (Qt)**
 
-Graphical User Interface (Qt)
+  * **Connect** → Establishes connection with the peer.
+  * **Send** → Encrypts & sends the message.
+  * **Disconnect** → Ends the connection.
+  * Message display window that **appends received messages** (no overwrite).
 
-Connect Button → Establishes connection with the peer.
+* ⚙️ **Configuration File**
 
-Input Textbox → Type your message.
+  * Local & peer IP addresses
+  * Local & peer port numbers
+  * RSA key file paths
+  * Cryptographic parameters (e.g., key sizes)
 
-Send Button → Encrypts & sends the message.
+---
 
-Display Window → Shows received messages (appends without overwriting).
+## 🛠 Tech Stack
 
-Disconnect Button → Ends the connection.
+* **Language**: C++17+
+* **GUI & Networking**: [Qt 5/6](https://www.qt.io/)
+* **Cryptography**: [Crypto++](https://cryptopp.com/)
+* **Build System**: CMake
 
-Configuration File
+---
 
-Stores all parameters such as:
+## ⚙️ How It Works
 
-Local & peer IP addresses
+### 🔑 Key Setup
 
-Local & peer port numbers
+* Each instance stores:
 
-RSA public/private key file paths
+  * Its own **private key**
+  * Its own **public key**
+  * The peer’s **public key**
+* Keys must be **pre-generated manually** (using [OpenSSL](https://www.openssl.org/) or similar).
 
-Cryptographic parameters (e.g., key sizes)
+### 🔗 Connection Establishment
 
-🛠 Tech Stack
+1. User clicks **Connect**.
+2. The app reads peer IP & port from the **config file**.
 
-Language: C++
+### 📤 Sending a Message
 
-GUI & Networking: Qt Framework
+1. User types a message.
+2. App generates a **new AES session key**.
+3. Message is encrypted with AES.
+4. AES session key is encrypted with the **peer’s RSA public key**.
+5. Encrypted message + encrypted session key are sent to the peer.
 
-⚙️ How It Works
+### 📥 Receiving a Message
 
-Key Setup
+1. App receives encrypted message + encrypted session key.
+2. Decrypts the session key using **local RSA private key**.
+3. Uses decrypted session key to decrypt the message (AES).
+4. Displays plaintext in the GUI.
 
-Each system stores its own private key and both public keys in the keys/ directory.
+---
 
-Keys must be pre-generated manually (using OpenSSL or similar).
+## ⚡ Installation & Setup
 
-Connection Establishment
+### 1. Prerequisites
 
-User clicks Connect → the app uses the config file to find the peer’s IP & port.
+* C++17 or later
+* Qt 5/6
+* Crypto++ library
+* CMake
 
-Message Sending
+### 2. Clone the Repository
 
-User types a message → app generates a new AES session key.
+```bash
+git clone https://github.com/your-username/secure-messaging-app.git
+cd secure-messaging-app
+```
 
-Message is encrypted with AES.
+### 3. Build the Project
 
-Session key is encrypted with peer’s public key (RSA).
+```bash
+mkdir build && cd build
+cmake ..
+make
+```
 
-Both encrypted message + encrypted session key are sent to the peer.
+### 4. Run
 
-Message Receiving
+```bash
+./SecureChat
+```
 
-App receives encrypted message + encrypted session key.
+---
 
-Decrypts session key with private key (RSA).
+## 📂 Project Structure
 
-Uses session key to decrypt the message (AES).
+```
+Directory structure:
+└── gurnoorsidhu-securechat/
+    ├── README.md
+    ├── CMakeLists.txt
+    ├── config.json
+    ├── config2.json
+    ├── cryptohelper.cpp
+    ├── cryptohelper.h
+    ├── main.cpp
+    ├── mainwindow.cpp
+    ├── mainwindow.cppZone.Identifier
+    └── mainwindow.h
 
-Displays the plaintext in the message window.
+```
 
-⚡ Installation & Setup
-1. Prerequisites
+---
 
-C++17 or later
+## 🔑 Generating RSA Keys (Example with OpenSSL)
 
-Qt 5/6 (for GUI & networking)
+```bash
+# Generate private key
+openssl genpkey -algorithm RSA -out local_private.pem -pkeyopt rsa_keygen_bits:2048
 
-Crypto++ library installed
+# Extract public key
+openssl rsa -pubout -in local_private.pem -out local_public.pem
+```
 
-CMake (for building)
+Repeat for the peer system and exchange **public keys only**.
+
+---
+
